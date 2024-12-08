@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Chirp;
 
 
+
 class ChirpCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
