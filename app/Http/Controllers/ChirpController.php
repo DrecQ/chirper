@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Chirp;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response; 
-use Illuminate\View\View;
-
 
 
 
@@ -15,12 +13,15 @@ class ChirpController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(): Response 
     {
-        return view('chirps.index');
+        //
+        return response('Hello, World!');
     }
 
-    
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         //
