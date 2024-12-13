@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use App\Models\User;
 
 
 
@@ -94,4 +95,20 @@ class ChirpController extends Controller
  
         return redirect(route('chirps.index'));
     }
+    public function test_un_utilisateur_peut_creer_un_chirp()
+{
+ // Simuler un utilisateur connecté
+ $utilisateur = User::factory()->create();
+ $this->actingAs($utilisateur);
+ $reponse = $this->post('/chirps', [
+    'content' => 'Mon premier chirp !'
+    ]);
+   
+    
+ $reponse->assertStatus(201);
+ $this->assertDatabaseHas('chirps', [
+ 'content' => 'Mon premier chirp !',
+ 'user_id' => $utilisateur->id,
+ ]);
+ }
 }
