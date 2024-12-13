@@ -137,4 +137,19 @@ class ChirpController extends Controller
         $reponse->assertSee($chirp->contenu);
         }
     }
+    public function test_un_utilisateur_peut_modifier_son_chirp()
+    {
+        $utilisateur = User::factory()->create();
+        $chirp = Chirp::factory()->create(['user_id' => $utilisateur->id]);
+        $this->actingAs($utilisateur);
+        $reponse = $this->put("/chirps/{$chirp->id}", [
+        'content' => 'Chirp modifié'
+        ]); 
+        $reponse->assertStatus(200);
+        // Vérifie si le chirp existe dans la base de donnée.
+        $this->assertDatabaseHas('chirps', [
+        'id' => $chirp->id,
+        'content' => 'Chirp modifié',
+        ]);
+        }
 }
