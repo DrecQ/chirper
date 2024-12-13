@@ -96,19 +96,37 @@ class ChirpController extends Controller
         return redirect(route('chirps.index'));
     }
     public function test_un_utilisateur_peut_creer_un_chirp()
-{
- // Simuler un utilisateur connecté
- $utilisateur = User::factory()->create();
- $this->actingAs($utilisateur);
- $reponse = $this->post('/chirps', [
-    'content' => 'Mon premier chirp !'
+    {
+        // Simuler un utilisateur connecté
+        $utilisateur = User::factory()->create();
+        $this->actingAs($utilisateur);
+        $reponse = $this->post('/chirps', [
+        'content' => 'Mon premier chirp !'
     ]);
    
     
- $reponse->assertStatus(201);
- $this->assertDatabaseHas('chirps', [
- 'content' => 'Mon premier chirp !',
- 'user_id' => $utilisateur->id,
- ]);
- }
+        $reponse->assertStatus(201);
+        $this->assertDatabaseHas('chirps', [
+        'content' => 'Mon premier chirp !',
+        'user_id' => $utilisateur->id,
+    ]);
+    }
+    public function test_un_chirp_ne_peut_pas_avoir_un_contenu_vide()
+    {
+        $utilisateur = User::factory()->create();
+        $this->actingAs($utilisateur);
+        $reponse = $this->post('/chirps', [
+            'content' => ''
+    ]);
+        $reponse->assertSessionHasErrors(['contenu']);
+    }
+    public function test_un_chirp_ne_peut_pas_depasse_255_caracteres()
+    {
+        $utilisateur = User::factory()->create();
+        $this->actingAs($utilisateur);
+        $reponse = $this->post('/chirps', [
+        'content' => str_repeat('a', 256)
+    ]);
+        $reponse->assertSessionHasErrors(['contenu']);
+    }  
 }
